@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class ProductElecMap {
 //                category.get(), req.getQuantity(), Constant.ENABLE);
 
         return new ProductElec(req.getName(), req.getDescription(), req.getPrice(),
-                category.get(), req.getQuantity(), Constant.ENABLE);
+                category.get(), req.getQuantity(),Constant.ENABLE, LocalDateTime.now(),LocalDateTime.now());
     }
 //    public ProductListRes toProductListRes(Product req) {
 //        List<ProductImage> images = req.getImages().stream()
@@ -56,8 +57,11 @@ public class ProductElecMap {
 //        String discountString = req.getPrice().multiply(BigDecimal.valueOf((double) (100- req.getDiscount())/100))
 //                .stripTrailingZeros().toPlainString();
 //        BigDecimal discountPrice = new BigDecimal(discountString);
+//        LocalDateTime current = LocalDateTime.now();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+//        String formatted = current.format(formatter);
         return new ProductElecResponse(req.getId(), req.getName(), req.getDescription(), req.getPrice(),
                 req.getCategory().getName(), req.getCategory().getId(), req.getQuantity(), req.getSold(),
-                req.getRate(), req.getCreatedDate(),req.getUpdateDate(), req.getState());
+                req.getRate(), req.getImages(), req.getCreatedDate(),req.getUpdateDate(), req.getState());
     }
 }

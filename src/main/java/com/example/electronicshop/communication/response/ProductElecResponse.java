@@ -1,6 +1,7 @@
 package com.example.electronicshop.communication.response;
 
 import com.example.electronicshop.models.enity.Category;
+import com.example.electronicshop.models.enity.ProductImage;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +11,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +26,9 @@ public class ProductElecResponse {
     private int quantity;
     private int sold;
     private double rate ;
-//    private String photo;
+    private List<ProductImage> images;
+
+    //    private String photo;
     @CreatedDate
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     LocalDateTime createdDate;

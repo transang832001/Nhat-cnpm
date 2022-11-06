@@ -8,11 +8,13 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,7 +29,14 @@ public class ProductElecRequest {
     @NotBlank(message = "Category is required")
     private String category;
     private int quantity;
-//    private double rate ;
+    private List<MultipartFile> images;
+    @CreatedDate
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    LocalDateTime createdDate;
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    @LastModifiedDate
+    LocalDateTime updateDate;
+    //    private double rate ;
 //    private String url;
 //    private String state;
 
