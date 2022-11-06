@@ -2,13 +2,16 @@ package com.example.electronicshop.service;
 
 import com.example.electronicshop.communication.request.ProductElecRequest;
 import com.example.electronicshop.communication.response.ProductElecResponse;
+import com.example.electronicshop.communication.response.ProductListRes;
 import com.example.electronicshop.config.CloudinaryConfig;
+import com.example.electronicshop.config.Constant;
 import com.example.electronicshop.map.ProductElecMap;
 import com.example.electronicshop.models.ResponseObject;
 import com.example.electronicshop.models.enity.Product;
 import com.example.electronicshop.models.enity.ProductElec;
 import com.example.electronicshop.models.enity.ProductImage;
 import com.example.electronicshop.notification.AppException;
+import com.example.electronicshop.notification.NotFoundException;
 import com.example.electronicshop.repository.BrandRepository;
 import com.example.electronicshop.repository.CategoryRepository;
 import com.example.electronicshop.repository.ProductElecRepository;
@@ -16,6 +19,8 @@ import com.mongodb.MongoWriteException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -24,10 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,4 +78,22 @@ public class ProductElecService {
         return product.getImages();
     }
 
+    public ResponseEntity<?> findAll(Pageable pageable) {
+        Page<ProductElec> products;
+        products = productElecRepository.findAllByState(Constant.ENABLE, pageable);
+        List<ProductListRes> resList = products.getContent().stream().map(productElecMap::toProductListRes).collect(Collectors.toList());
+        ResponseEntity<?> resp = addPageableToRes(products, resList);
+        if (resp != null) return resp;
+        throw new NotFoundException("Can not found any product");
+    }
+    private ResponseEntity<?> addPageableToRes(Page<ProductElec> products, List<ProductListRes> resList) {
+        Map<String, Object> resp = new HashMap<>();
+        resp.put("list", resList);
+        resp.put("totalQuantity", products.getTotalElements());
+        resp.put("totalPage", products.getTotalPages());
+        if (resList.size() >0 )
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    new ResponseObject("true", "Get all product success", resp));
+        return null;
+    }
 }
